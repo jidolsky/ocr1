@@ -155,8 +155,8 @@ with footer_container:
     with col_team:
         st.markdown("#### 식품영양성분 분석 프로그램 ")
         st.write("초당고등학교 프로젝트봉사활동")
-        st.write("오류 및 다른사항 문의: 010-8671-0179(문자메시지 또는 카카오톡)")
-        st.write("개발버전: v1.0")
+        st.write("오류 및 문의사항 : 010-8671-0179(문자메시지 또는 카카오톡)")
+        st.write("개발버전: v1.01")
         st.write("최종개발수정일: 05/05/2026")
 
 st.markdown(
