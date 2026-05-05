@@ -104,7 +104,7 @@ if img_file and db_df is not None:
                 m1.metric("🔥 열 량", f"{res['calories']} kcal")
                 m2.metric("🍭 당 류", f"{res['sugar']} g")
                 m3.metric("🧂 나 트 륨 ", f"{res['natrium']} mg")
-                st.subheader("📊 9대 필수 영양성분 리포트")
+                st.subheader("📊 영양성분 리포트")
                 
                 # 그래프용 데이터 
                 nutrition_labels = ["열량", "나트륨", "탄수화물", "당류", "지방", "트랜스지방산", "포화지방산", "콜레스테롤", "단백질"]
