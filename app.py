@@ -55,7 +55,7 @@ if img_file and db_df is not None:
         if "ai_name" not in st.session_state or st.session_state.get("last_uploaded_img") != img_file.name:
             with st.spinner("분석 중..."):
                 img = Image.open(img_file)
-                prompt = "사진 속 제품 라벨에 가장 크게 적힌 한국어 제품명만 딱 한 줄로 말해줘. (예: 토레타, 카스타드)"
+                prompt = "사진 속 제품 라벨에 가장 크게 적힌 한국어 제품명만 딱 한 줄로 말해줘 띄어쓰기없이. (예: 토레타, 카스타드)"
                 response = model.generate_content([prompt, img])
                 st.session_state.ai_name = response.text.strip().replace("!", "")
                 st.session_state.last_uploaded_img = img_file.name
