@@ -111,7 +111,7 @@ if img_file and db_df is not None:
                 nutrition_values = [res['calories'], res['natrium'], res['carbs'], res['sugar'], res['fat'], res['t_fat'], res['p_fat'], res['chole'], res['protein']]
 
                 # 한글 폰트
-                plt.rcParams['font.family'] = 'Malgun Gothic' 
+                plt.rcParams['font.family'] = 'NanumGothic' 
                 plt.rcParams['axes.unicode_minus'] = False
 
                 fig, ax = plt.subplots(figsize=(10, 5))
