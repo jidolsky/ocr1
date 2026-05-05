@@ -13,7 +13,7 @@ model = genai.GenerativeModel('gemini-flash-latest')
 @st.cache_data
 def load_db():
     try:
-        df = pd.read_csv('food_db.csv', encoding='utf-8')
+        df = pd.read_csv('food_db.csv', encoding='cp949)
         return df
     except FileNotFoundError:
         st.error("food_db.csv 파일을 찾을 수 없습니다!")
