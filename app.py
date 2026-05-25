@@ -157,7 +157,7 @@ if img_file and db_df is not None:
 
 st.divider()
 
-with st.expander("🔐 [관리자 전용] 트래픽 관제 패널):
+with st.expander("🔐 [관리자 전용] 트래픽 관제 패널"):
     
     # 1. 관리자 패스워드 검증
     admin_password = st.text_input("관리자용 비밀번호를 입력하세요.", type="password", key="admin_pwd")
