@@ -55,7 +55,7 @@ st.markdown("""
     </script>
 """, unsafe_allow_html=True)
 #상단 정보표시란
-st.title("영양성분 인식프로그램 ")
+st.title("양지 인식프로그램 ")
 
 #핵심로직
 db_df = load_db()
