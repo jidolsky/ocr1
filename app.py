@@ -9,10 +9,10 @@ from datetime import datetime
 #페이지 트래픽 계산용 함수
 def record_traffic():
     file_path = "traffic_log.csv"
-    if not os.path.exists(file_path):
+    if not os.path.exists(file_path) or os.path.getsize(file_path) == 0:
         with open(file_path, "w", encoding="utf-8") as f:
             f.write("timestamp\n")
-            
+        
     with open(file_path, "a", encoding="utf-8") as f:
         now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         f.write(f"{now}\n")
@@ -233,8 +233,8 @@ with footer_container:
         st.markdown("#### 식품영양성분 분석 프로그램 ")
         st.write("초당고등학교 프로젝트봉사활동")
         st.write("오류 및 문의사항 : 010-8671-0179(문자메시지 또는 카카오톡)")
-        st.write("개발버전: v1.02")
-        st.write("최종개발수정일: 06/05/2026")
+        st.write("개발버전: v1.03(finops 기능추가)")
+        st.write("최종개발수정일: 25/05/2026")
 
 st.markdown(
     """
