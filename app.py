@@ -3,6 +3,22 @@ import google.generativeai as genai
 from PIL import Image
 import pandas as pd
 import matplotlib.pyplot as plt
+import os
+from datetime import datetime
+
+#페이지 트래픽 계산용 함수
+def record_traffic():
+    file_path = "traffic_log.csv"
+    if not os.path.exists(file_path):
+        with open(file_path, "w", encoding="utf-8") as f:
+            f.write("timestamp\n")
+            
+    with open(file_path, "a", encoding="utf-8") as f:
+        now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        f.write(f"{now}\n")
+
+# 페이지 새로 고침수마다 트래픽 1증가
+record_traffic()
 
 # API 설정
 GEMINI_API_KEY = st.secrets["GEMINI_API_KEY"]   
@@ -136,6 +152,67 @@ if img_file and db_df is not None:
                     st.table(table_df)           
         else:
             st.warning(f"인식된 단어 '{ai_name}'에 해당하는 제품을 DB에서 찾을 수 없습니다.")
+
+#심포지엄 활동용으로 추가한 트래픽 분석기능 (개발자전용)
+
+st.divider()
+
+with st.expander("🔐 [관리자 전용] 트래픽 관제 패널):
+    
+    # 1. 관리자 패스워드 검증
+    admin_password = st.text_input("관리자용 비밀번호를 입력하세요.", type="password", key="admin_pwd")
+    
+    if admin_password == "admin1234":
+        st.success("🔒 인증 성공")
+        st.divider()
+        
+        # 2. traffic_log.csv 파일 읽기 및 Pandas 연산
+        try:
+            # 실제 로그 파일 불러오기
+            df_traffic = pd.read_csv("traffic_log.csv")
+            df_traffic['timestamp'] = pd.to_datetime(df_traffic['timestamp'])
+            
+            # (1) 일간  통계
+            df_traffic['hour'] = df_traffic['timestamp'].dt.hour
+            hourly_counts = df_traffic['hour'].value_counts().reindex(range(24), fill_value=0)
+            hours_labels = [f"{i:02d}시" for i in range(24)]
+            df_daily = pd.DataFrame({"접속량 (API 호출 수)": hourly_counts.values}, index=hours_labels)
+
+            # (2) 주간 통계
+            df_traffic['weekday'] = df_traffic['timestamp'].dt.weekday
+            weekday_counts = df_traffic['weekday'].value_counts().reindex(range(7), fill_value=0)
+            days_labels = ['월요일', '화요일', '수요일', '목요일', '금요일', '토요일', '일요일']
+            df_weekly = pd.DataFrame({"접속량 (API 호출 수)": weekday_counts.values}, index=days_labels)
+
+            # (3) 월간 통계
+            df_traffic['month'] = df_traffic['timestamp'].dt.month
+            month_counts = df_traffic['month'].value_counts().reindex(range(1, 13), fill_value=0)
+            months_labels = [f"{i}월" for i in range(1, 13)]
+            df_monthly = pd.DataFrame({"누적 접속자 수": month_counts.values}, index=months_labels)
+
+            # 3. 트래픽 시각화 탭 구성
+            st.subheader("📊 웹사이트 트래픽 용량 지표")
+            tab_daily, tab_weekly, tab_monthly = st.tabs(["📅 일간 트래픽", "📆 주간 트래픽", "🗓️ 월간 트래픽"])
+            
+            with tab_daily:
+                st.markdown("##### 🕒 24시간 실시간 트래픽 추이")
+                st.area_chart(df_daily, color="#0068C9")
+                
+            with tab_weekly:
+                st.markdown("##### 📈 7일간 누적 트래픽 변동 추이")
+                st.bar_chart(df_weekly, color="#FF4B4B")
+                
+            with tab_monthly:
+                st.markdown("##### 📉 12개월 누적 접속자 수 트렌드")
+                st.line_chart(df_monthly, color="#29B5E8")
+                
+            st.divider()
+
+        except FileNotFoundError:
+            st.warning("🔄 데이터 수집 중입니다. (아직 누적된 트래픽 로그 파일이 없거나 생성 중입니다.)")
+
+    elif admin_password != "":
+        st.error("❌ 인증 실패: 패스워드가 일치하지 않습니다.")
 
 #하단 정보표시란 
 st.divider() 
