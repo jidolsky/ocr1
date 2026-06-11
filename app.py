@@ -210,17 +210,17 @@ with st.expander("🔐 [관리자 전용] 트래픽 관제 패널"):
                 st.area_chart(df_daily, color="#0068C9")
                 
             with tab_weekly:
-                st.markdown("##### 📈 7일간 누적 트래픽 변동 추이")
+                st.markdown("##### 📈 7일간 누적 트래픽 추이")
                 st.bar_chart(df_weekly, color="#FF4B4B")
                 
             with tab_monthly:
-                st.markdown("##### 📉 12개월 누적 접속자 수 트렌드")
+                st.markdown("##### 📉 12개월 누적 트래픽 추이")
                 st.line_chart(df_monthly, color="#29B5E8")
                 
             st.divider()
 
         except FileNotFoundError:
-            st.warning("🔄 데이터 수집 중입니다. (아직 누적된 트래픽 로그 파일이 없거나 생성 중입니다.)")
+            st.warning("🔄 데이터 수집 중입니다.")
 
     elif admin_password != "":
         st.error("❌ 인증 실패: 패스워드가 일치하지 않습니다.")
@@ -244,8 +244,8 @@ with footer_container:
         st.markdown("#### 식품영양성분 분석 프로그램 ")
         st.write("초당고등학교 프로젝트봉사활동")
         st.write("오류 및 문의사항 : 010-8671-0179(문자메시지 또는 카카오톡)")
-        st.write("개발버전: v1.03(finops 기능추가)")
-        st.write("최종개발수정일: 25/05/2026")
+        st.write("개발버전: v1.04(카메라기능 추가)")
+        st.write("최종개발수정일: 12/06/2026")
 
 st.markdown(
     """
