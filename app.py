@@ -59,25 +59,36 @@ st.title("영양성분 인식프로그램 ")
 
 #핵심로직
 db_df = load_db()
-img_file = st.file_uploader("확인하고자 하는 제품의 사진을 업로드 해주세요.", type=['png', 'jpg', 'jpeg'])
-#인식로직
-if img_file and db_df is not None:
+
+tab1, tab2 = st.tabs(["📸 카메라로 촬영", "📁 파일 업로드"])
+
+with tab1:
+    cam_file = st.camera_input("제품의 라벨이 잘 보이도록 촬영해 주세요.")
+
+with tab2:
+    img_file = st.file_uploader("확인하고자 하는 제품의 사진을 업로드 해주세요.", type=['png', 'jpg', 'jpeg'])
+
+uploaded_file = cam_file if cam_file is not None else img_file
+
+# 인식 로직 
+if uploaded_file and db_df is not None:
     col1, col2 = st.columns([1, 1])
     
     with col1:
-        st.image(img_file, caption="분석 대상 사진", use_container_width=True)
+        st.image(uploaded_file, caption="분석 대상 사진", use_container_width=True)
         
     with col2:
-        if "ai_name" not in st.session_state or st.session_state.get("last_uploaded_img") != img_file.name:
+        file_identifier = uploaded_file.name if hasattr(uploaded_file, 'name') else "camera_image"
+        
+        if "ai_name" not in st.session_state or st.session_state.get("last_uploaded_img") != file_identifier:
             with st.spinner("분석 중..."):
-                img = Image.open(img_file)
-                prompt = "사진 속 제품 라벨에 가장 크게 적힌 한국어 제품명만 딱 한 줄로 말해줘 띄어쓰기없이.  (예: 토레타, 카스타드), 단 영어가 가장 크게적힌 단어일경우, 영단어를 한글로 해석하여 표기해. (예: Lipton ->립톤) "
+                img = Image.open(uploaded_file)
+                prompt = "사진 속 제품 라벨에 가장 크게 적힌 한국어 제품명만 딱 한 줄로 말해줘 띄어쓰기없이.  (예: 토레타, 카스타드), 단 영어가 가장 크게적힌 단어일경우, 영단어를 한글로 해석하여 표기해. (예: Lipton ->립톤)"
                 response = model.generate_content([prompt, img])
                 st.session_state.ai_name = response.text.strip().replace("!", "")
-                st.session_state.last_uploaded_img = img_file.name
+                st.session_state.last_uploaded_img = file_identifier
 
-        ai_name = st.session_state.ai_name
-        
+        ai_name = st.session_state.ai_name        
         search_results = db_df[db_df['식품명'].str.contains(ai_name, na=False)].copy()
         #결과로직     
         if not search_results.empty:
