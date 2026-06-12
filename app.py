@@ -96,7 +96,7 @@ if uploaded_file and db_df is not None:
         matched_rows = db_df[db_df['제품명'].str.contains(ai_name, na=False)]
         
         if matched_rows.empty:
-            st.error(f"🔍 데이터베이스에서 **'{ai_name}'**에 해당하는 영양성분 정보를 찾을 수 없습니다.")
+            st.error(f"데이터베이스에서 **'{ai_name}'**에 해당하는 영양성분 정보를 찾을 수 없습니다.")
             st.warning("제품 라벨의 글자가 잘 보이도록 다시 한번 촬영해 주세요!")
         else:
             res = matched_rows.iloc[0]
