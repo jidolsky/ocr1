@@ -167,6 +167,78 @@ if uploaded_file and db_df is not None:
                     st.table(table_df)           
         else:
             st.warning(f"인식된 단어 '{ai_name}'에 해당하는 제품을 DB에서 찾을 수 없습니다.")
+        # 1. 식약처 기준 일일 영양성분 기준치 데이터 (성인 기준)
+        daily_standards = {
+            'calories': 2000,      # 열량: 2000kcal
+            'natrium': 2000,       # 나트륨: 2000mg
+            'carbs': 324,          # 탄수화물: 324g
+            'sugar': 100,          # 당류: 100g
+            'fat': 54,             # 지방: 54g
+            't_fat': 2,            # 트랜스지방산: 약 2g 제한
+            'p_fat': 15,           # 포화지방산: 15g
+            'chole': 300,          # 콜레스테롤: 300mg
+            '단백질': 55           # 단백질: 55g (식약처 데이터 매핑명 확인 필요)
+        }
+        
+        # 2. 일일 기준치 대비 비율(%) 계산 및 최대 섭취 가능 개수 산출
+        st.markdown("---")
+        st.subheader("⚠️ 영양성분 과다섭취 경고 패널")
+        
+        # 가장 위험한 요소(비율이 가장 높은 요소)를 찾기 위한 변수들
+        max_percentage = 0
+        danger_nutrient = ""
+        limit_count = 99
+        
+        # 체크할 영양소 리스트 (식약처 기준치 매핑명과 맞춰야 합니다)
+        check_nutrients = [
+            ('열량', res['calories'], daily_standards['calories'], 'kcal'),
+            ('나트륨', res['natrium'], daily_standards['natrium'], 'mg'),
+            ('탄수화물', res['carbs'], daily_standards['carbs'], 'g'),
+            ('당류', res['sugar'], daily_standards['sugar'], 'g'),
+            ('지방', res['fat'], daily_standards['fat'], 'g'),
+            ('포화지방산', res['p_fat'], daily_standards['p_fat'], 'g'),
+            ('콜레스테롤', res['chole'], daily_standards['chole'], 'mg'),
+        ]
+        
+        # 화면 레이아웃 (퍼센트 수치 나열)
+        col_pct1, col_pct2 = st.columns(2)
+        
+        with col_pct1:
+            st.markdown("**📊 이 제품 1개 섭취 시 일일 기준치 비율**")
+            for name, value, std, unit in check_nutrients:
+                if value > 0:
+                    pct = (value / std) * 100
+                    st.write(f"• {name}: **{pct:.1f}%** ({value}{unit} / {std}{unit})")
+                    
+                    # 1개만 먹어도 하루 기준치를 가장 많이 채우는 성분 추적
+                    if pct > max_percentage:
+                        max_percentage = pct
+                        danger_nutrient = name
+                        # 해당 성분 기준으로 하루에 몇 개까지 먹을 수 있는지 계산 (소수점 버림)
+                        limit_count = int(std // value) if value > 0 else 99
+        
+        with col_pct2:
+            # 3. 경각심을 주는 큰 폰트 경고 창 (HTML/CSS 사용)
+            st.markdown("**🚨 연속 섭취 제한 경고**")
+            if danger_nutrient != "" and limit_count < 99:
+                # 안전/경고 수치에 따른 색상 분기
+                box_color = "#FF4B4B" if limit_count <= 2 else "#FFA500" # 2개 이하면 빨강, 아니면 주황
+                
+                if limit_count == 0:
+                    alert_text = f"🚨 이 제품은 1개만 먹어도 하루 <b>{danger_nutrient}</b> 기준치를 초과합니다!"
+                else:
+                    alert_text = f"⚠️ 하루에 최대 <span style='font-size:32px; font-weight:bold;'>{limit_count}개</span>까지만 드세요!"
+                    
+                st.markdown(f"""
+                    <div style="background-color: {box_color}22; border: 2px solid {box_color}; padding: 20px; border-radius: 10px; text-align: center;">
+                        <p style="font-size: 18px; margin-bottom: 5px; color: white;">가장 높은 비율 성분: <b>{danger_nutrient} ({max_percentage:.1f}%)</b></p>
+                        <h2 style="color: {box_color}; margin-top: 0px; font-size: 28px;">{alert_text}</h2>
+                        <p style="font-size: 13px; color: #aaa; margin-top: 10px;">* 식약처 성인 하루 영양성분 기준치 데이터 기반</p>
+                    </div>
+                    """, unsafe_allow_html=True)
+            else:
+                st.info("영양성분 데이터가 부족하여 경고를 계산할 수 없습니다.")
+        
 
 #심포지엄 활동용으로 추가한 트래픽 분석기능 (개발자전용)
 
