@@ -55,7 +55,7 @@ st.markdown("""
     </script>
 """, unsafe_allow_html=True)
 #상단 정보표시란
-st.title("영양성분 인식프로그램 ")
+st.title("영양성분 인식프로그램, \n <small>(google.api_core.exceptions.ResourceExhausted 오류가 나오면서 빨간색 창이 뜰경우, 당일 사용자가 너무많아서 발생하는 문제이니 나중에 다시 한번 시도해 주시면 감사하겠습니다)<small> ")
 
 #핵심로직
 db_df = load_db()
