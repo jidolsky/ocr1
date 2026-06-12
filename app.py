@@ -92,7 +92,17 @@ if uploaded_file and db_df is not None:
                 st.session_state.ai_name = response.text.strip().replace("!", "")
                 st.session_state.last_uploaded_img = file_identifier
 
-        ai_name = st.session_state.ai_name        
+        ai_name = st.session_state.ai_name
+        matched_rows = db_df[db_df['제품명'].str.contains(ai_name, na=False)]
+        
+        if matched_rows.empty:
+            st.error(f"🔍 데이터베이스에서 **'{ai_name}'**에 해당하는 영양성분 정보를 찾을 수 없습니다.")
+            st.warning("제품 라벨의 글자가 잘 보이도록 다시 한번 촬영해 주세요!")
+        else:
+            res = matched_rows.iloc[0]
+            st.success(f"제품 확인 완료: **{res['제품명']}**")
+            
+        
         search_results = db_df[db_df['식품명'].str.contains(ai_name, na=False)].copy()
         #결과로직     
         if not search_results.empty:
