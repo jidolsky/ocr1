@@ -100,8 +100,6 @@ if uploaded_file and db_df is not None:
             st.warning("제품 라벨의 글자가 잘 보이도록 다시 한번 촬영해 주세요!")
         else:
             res = matched_rows.iloc[0]
-            # 🔑 [수정] res['제품명'] -> res['식품명'] 으로 변경
-            st.success(f"제품 확인 완료: **{res['식품명']}**")
             
         
         search_results = db_df[db_df['식품명'].str.contains(ai_name, na=False)].copy()
