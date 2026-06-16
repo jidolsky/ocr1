@@ -55,7 +55,7 @@ st.markdown("""
     </script>
 """, unsafe_allow_html=True)
 #상단 정보표시란
-st.title("영양성분 인식프로그램, \n (google.api_core.exceptions.ResourceExhausted 오류가 나오면서 빨간색 창이 뜰경우, 당일 사용자가 너무많아서 발생하는 문제이니 나중에 다시 한번 시도해 주시면 감사하겠습니다) ")
+st.title("영양성분 인식프로그램 \n <small>(google.api_core.exceptions.ResourceExhausted 오류가 나오면서 빨간색 창이 뜰경우, 당일 사용자가 너무많아서 발생하는 문제이니 나중에 다시 한번 시도해 주시면 감사하겠습니다)</small> ")
 
 #핵심로직
 db_df = load_db()
@@ -323,8 +323,8 @@ with footer_container:
         st.markdown("#### 식품영양성분 분석 프로그램 ")
         st.write("초당고등학교 프로젝트봉사활동")
         st.write("오류 및 문의사항 : 010-8671-0179(문자메시지 또는 카카오톡)")
-        st.write("개발버전: v1.05(카메라기능/일일 영양성분 기준치 기능 추가)")
-        st.write("최종개발수정일: 12/06/2026")
+        st.write("개발버전: v1.06(GUI일부 수정)")
+        st.write("최종개발수정일: 16/06/2026")
 
 st.markdown(
     """
